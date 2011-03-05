@@ -63,9 +63,6 @@ public class RotarySelector extends View {
     private Bitmap mLeftHandleIcon;
     private Bitmap mRightHandleIcon;
 
-    private Bitmap mArrowShortLeftAndRight;
-    private Bitmap mArrowLongLeft;  // Long arrow starting on the left, pointing clockwise
-    private Bitmap mArrowLongRight;  // Long arrow starting on the right, pointing CCW
 
     // positions of the left and right handle
     private int mLeftHandleX;
@@ -88,7 +85,6 @@ public class RotarySelector extends View {
 
     // used to rotate the background and arrow assets depending on orientation
     final Matrix mBgMatrix = new Matrix();
-    final Matrix mArrowMatrix = new Matrix();
 
     /**
      * If the user is currently dragging something.
@@ -108,12 +104,6 @@ public class RotarySelector extends View {
     private Vibrator mVibrator;
     private static final long VIBRATE_SHORT = 30;  // msec
     private static final long VIBRATE_LONG = 40;  // msec
-
-    /**
-     * The drawable for the arrows need to be scrunched this many dips towards the rotary bg below
-     * it.
-     */
-    private static final int ARROW_SCRUNCH_DIP = 6;
 
     /**
      * How far inset the left and right circles should be
@@ -181,10 +171,6 @@ public class RotarySelector extends View {
         mBackground = getBitmapFor(R.drawable.jog_dial_bg);
         mDimple = getBitmapFor(R.drawable.jog_dial_dimple);
         mDimpleDim = getBitmapFor(R.drawable.jog_dial_dimple_dim);
-
-        mArrowLongLeft = getBitmapFor(R.drawable.jog_dial_arrow_long_left_green);
-        mArrowLongRight = getBitmapFor(R.drawable.jog_dial_arrow_long_right_red);
-        mArrowShortLeftAndRight = getBitmapFor(R.drawable.jog_dial_arrow_short_left_and_right);
 
         mInterpolator = new DecelerateInterpolator(1f);
 
@@ -269,14 +255,9 @@ public class RotarySelector extends View {
         final int length = isHoriz() ?
                 MeasureSpec.getSize(widthMeasureSpec) :
                 MeasureSpec.getSize(heightMeasureSpec);
-        final int arrowScrunch = (int) (ARROW_SCRUNCH_DIP * mDensity);
-        final int arrowH = mArrowShortLeftAndRight.getHeight();
-
-        // by making the height less than arrow + bg, arrow and bg will be scrunched together,
-        // overlaying somewhat (though on transparent portions of the drawable).
-        // this works because the arrows are drawn from the top, and the rotary bg is drawn
-        // from the bottom.
-        final int height = mBackgroundHeight + arrowH - arrowScrunch;
+        final int height = isHoriz() ?
+                MeasureSpec.getSize(heightMeasureSpec) :
+                MeasureSpec.getSize(widthMeasureSpec);
 
         if (isHoriz()) {
             setMeasuredDimension(length, height);
@@ -308,32 +289,6 @@ public class RotarySelector extends View {
         // Background:
         canvas.drawBitmap(mBackground, mBgMatrix, mPaint);
 
-        // Draw the correct arrow(s) depending on the current state:
-        mArrowMatrix.reset();
-        switch (mGrabbedState) {
-            case NOTHING_GRABBED:
-                //mArrowShortLeftAndRight;
-                break;
-            case LEFT_HANDLE_GRABBED:
-                mArrowMatrix.setTranslate(0, 0);
-                if (!isHoriz()) {
-                    mArrowMatrix.preRotate(-90, 0, 0);
-                    mArrowMatrix.postTranslate(0, height);
-                }
-                canvas.drawBitmap(mArrowLongLeft, mArrowMatrix, mPaint);
-                break;
-            case RIGHT_HANDLE_GRABBED:
-                mArrowMatrix.setTranslate(0, 0);
-                if (!isHoriz()) {
-                    mArrowMatrix.preRotate(-90, 0, 0);
-                    // since bg width is > height of screen in landscape mode...
-                    mArrowMatrix.postTranslate(0, height + (mBackgroundWidth - height));
-                }
-                canvas.drawBitmap(mArrowLongRight, mArrowMatrix, mPaint);
-                break;
-            default:
-                throw new IllegalStateException("invalid mGrabbedState: " + mGrabbedState);
-        }
 
         final int bgHeight = mBackgroundHeight;
         final int bgTop = isHoriz() ?
