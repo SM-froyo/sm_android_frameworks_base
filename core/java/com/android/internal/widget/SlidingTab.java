@@ -301,7 +301,20 @@ public class SlidingTab extends ViewGroup {
             if (animate) {
                 TranslateAnimation trans = new TranslateAnimation(0, dx, 0, dy);
                 trans.setDuration(ANIM_DURATION);
-                trans.setFillAfter(false);
+                trans.setAnimationListener(new AnimationListener() {
+                    public void onAnimationEnd(Animation animation) {
+                        reset(false);
+                    }
+
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                });
                 text.startAnimation(trans);
                 tab.startAnimation(trans);
             } else {
@@ -611,7 +624,7 @@ public class SlidingTab extends ViewGroup {
                     mTracking = false;
                     mTriggered = false;
                     mOtherSlider.show(true);
-                    mCurrentSlider.reset(false);
+                    mCurrentSlider.reset(true);
                     mCurrentSlider.hideTarget();
                     mCurrentSlider = null;
                     mOtherSlider = null;
