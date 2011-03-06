@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -74,7 +75,7 @@ public class SlidingTab extends ViewGroup {
     /**
      * Either {@link #HORIZONTAL} or {@link #VERTICAL}.
      */
-    private int mOrientation;
+    private boolean mOrientation;
 
     private Slider mLeftSlider;
     private Slider mRightSlider;
@@ -301,6 +302,7 @@ public class SlidingTab extends ViewGroup {
             if (animate) {
                 TranslateAnimation trans = new TranslateAnimation(0, dx, 0, dy);
                 trans.setDuration(ANIM_DURATION);
+                trans.setInterpolator(new LinearInterpolator());
                 trans.setAnimationListener(new AnimationListener() {
                     public void onAnimationEnd(Animation animation) {
                         reset(false);
@@ -315,8 +317,9 @@ public class SlidingTab extends ViewGroup {
                     }
 
                 });
-                text.startAnimation(trans);
                 tab.startAnimation(trans);
+                text.startAnimation(trans);
+                
             } else {
                 if (horiz) {
                     text.offsetLeftAndRight(dx);
@@ -460,9 +463,8 @@ public class SlidingTab extends ViewGroup {
         // Allocate a temporary once that can be used everywhere.
         mTmpRect = new Rect();
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SlidingTab);
-        mOrientation = a.getInt(R.styleable.SlidingTab_orientation, HORIZONTAL);
-        a.recycle();
+        mOrientation = (Settings.System.getInt(mContext.getContentResolver(),
+         Settings.System.LOCKSCREEN_ORIENTATION, 0) == 1);
 
         Resources r = getResources();
         mDensity = r.getDisplayMetrics().density;
@@ -536,6 +538,9 @@ public class SlidingTab extends ViewGroup {
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
+                if (withinView(x, y, this) ) {
+                    reset(false);
+                }   
                 mTracking = true;
                 mTriggered = false;
                 vibrate(VIBRATE_SHORT);
@@ -716,7 +721,7 @@ public class SlidingTab extends ViewGroup {
     }
 
     private boolean isHorizontal() {
-        return mOrientation == HORIZONTAL;
+        return mOrientation;
     }
 
     private void resetView() {

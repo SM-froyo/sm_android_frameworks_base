@@ -2248,6 +2248,14 @@ public final class Settings {
          */
         public static final String NOTIF_BAR_CUSTOM = "notif_bar_custom";
 
+
+        /**
+         * Whether to use lockscreen music controls
+         * @hide
+         */
+        public static final String LOCKSCREEN_ORIENTATION = "lockscreen_orientation";
+
+
         /**
          * Whether to use lockscreen music controls
          * @hide
