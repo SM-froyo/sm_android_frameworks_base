@@ -47,7 +47,6 @@ import android.text.ClipboardManager;
 import android.text.DynamicLayout;
 import android.text.Editable;
 import android.text.GetChars;
-import android.text.GetCharsDraw;
 import android.text.GraphicsOperations;
 import android.text.InputFilter;
 import android.text.InputType;
