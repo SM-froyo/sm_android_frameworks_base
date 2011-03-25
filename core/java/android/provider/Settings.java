@@ -1303,6 +1303,13 @@ public final class Settings {
         public static final String NOTIFICATION_SCREEN_LIGHTER_TIME = "notification_screen_lighter_time";
 
         /**
+         * Time to wake on new notification.
+         *
+         * @hide
+         */
+        public static final String EMAIL_POLICY_OVERRIDE = "email_policy_override";
+
+        /**
          * Control whether the process CPU usage meter should be shown.
          */
         public static final String SHOW_PROCESSES = "show_processes";
