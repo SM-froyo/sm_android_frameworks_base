@@ -43,35 +43,9 @@ public class BrightnessButton extends PowerButton {
 
     private static int currentMode;
 
-
-    /*
-     * 
-Auto_Min_Low_Max
-Auto_Min . Max
-Auto. Min . Low High. Max
-Auto_Low / High
-Auto_Low / High / Max
-
-
-Min / Max
-Min Low Max
-Min Low High Max
-Low High
-Low High Max
-
-
-     */
-
     public static int getMinBacklight(Context context) {
-        if (Settings.System.getInt(context.getContentResolver(),
-             Settings.System.LIGHT_SENSOR_CUSTOM, 0) != 0) {
-               return Settings.System.getInt(context.getContentResolver(),
-                        Settings.System.LIGHT_SCREEN_DIM, MINIMUM_BACKLIGHT);
-        } else {
-            return MINIMUM_BACKLIGHT;
-        }
+        return MINIMUM_BACKLIGHT;
     }
-
 
     private static boolean isAutomaticModeSupported(Context context) {
         if (supportsAutomaticMode == null) {
@@ -108,8 +82,6 @@ Low High Max
         }
         return false;
     }
-
-
 
     private int getNextBrightnessValue(Context context) {
         int brightness = Settings.System.getInt(context.getContentResolver(),
