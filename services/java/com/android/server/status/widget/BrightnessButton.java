@@ -5,6 +5,7 @@ import com.android.server.status.widget.PowerButton;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IPowerManager;
 import android.os.RemoteException;
@@ -43,9 +44,29 @@ public class BrightnessButton extends PowerButton {
 
     private static int currentMode;
 
+
+    /*
+     * 
+Auto_Min_Low_Max
+Auto_Min . Max
+Auto. Min . Low High. Max
+Auto_Low / High
+Auto_Low / High / Max
+
+
+Min / Max
+Min Low Max
+Min Low High Max
+Low High
+Low High Max
+
+
+     */
+
     public static int getMinBacklight(Context context) {
         return MINIMUM_BACKLIGHT;
     }
+
 
     private static boolean isAutomaticModeSupported(Context context) {
         if (supportsAutomaticMode == null) {
@@ -165,7 +186,11 @@ public class BrightnessButton extends PowerButton {
     }
 
     public boolean launchActivity(Context context) {
-        return false;
+        Intent intentBrightness = new Intent();
+        intentBrightness.setAction(android.provider.Settings.ACTION_DISPLAY_SETTINGS);
+        intentBrightness.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intentBrightness);
+        return true;
     }
 
     public static BrightnessButton getInstance() {
